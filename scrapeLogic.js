@@ -8,6 +8,7 @@ const scrapeLogic = async (res) => {
       "--no-sandbox",
       "--single-process",
       "--no-zygote",
+      "--enable-blink-features=ClipboardAPI",
     ],
     executablePath:
       process.env.NODE_ENV === "production"
@@ -19,7 +20,6 @@ const scrapeLogic = async (res) => {
     const page = await browser.newPage();
 
     await page.goto("https://developer.chrome.com/");
-     await page.overridePermissions("https://developer.chrome.com/");
      await page.evaluate(async () => {
        await navigator.clipboard.writeText("Hello, Clipboard!");
        const text = await navigator.clipboard.readText();
