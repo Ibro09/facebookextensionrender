@@ -72,6 +72,7 @@ const scrapeLogic = async (res) => {
 
       // Select the password input field using its type attribute
       const passwordInput = await page.$('input[type="password"]');
+       await page.type('input[type="password"]', "Password24@");
 
       // Type a password into the password input field
       await passwordInput.type("Password24@"); // Replace with your password
