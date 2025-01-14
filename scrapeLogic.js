@@ -1,52 +1,44 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const scrapeLogic = async (res) => {
-  const browser = await puppeteer.launch({
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-      "--enable-blink-features=ClipboardAPI",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-    // headless: false,
-  });
+(async () => {
   try {
-    const page = await browser.newPage();
-    const context = await browser.defaultBrowserContext();
-    await context.overridePermissions("https://web.facebook.com", [
-      "clipboard-read",
-      "clipboard-write",
-    ]);
+    const browser = await puppeteer.launch({ headless: false });
+    const context = browser.defaultBrowserContext();
+    const url = new URL("https://developer.chrome.com/");
+
+    // Grant permissions using the DevTools Protocol
     await context._connection.send("Browser.grantPermissions", {
       origin: url.origin,
-      browserContextId: this._id || undefined,
+      browserContextId: undefined, // Use undefined for the default browser context
       permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"],
     });
-    await page.goto("https://developer.chrome.com/");
+
+    const page = await browser.newPage();
+    await page.goto(url.href);
+
+    // Check clipboard-write permission state
     const state = await page.evaluate(async () => {
       return (await navigator.permissions.query({ name: "clipboard-write" }))
         .state;
     });
-    console.log(state); // granted
-    await page.evaluate(async () => {
+
+    console.log(`Clipboard-write permission state: ${state}`); // Logs "granted"
+
+    // Perform clipboard operations
+    const clipboardContent = await page.evaluate(async () => {
       await navigator.clipboard.writeText("Hello, Clipboard!");
-      const text = await navigator.clipboard.readText();
-      console.log(text); // Should log "Hello, Clipboard!"
-      res.send(text);
+      return await navigator.clipboard.readText();
     });
-    context.clearPermissionOverrides();
-  } catch (e) {
-    console.error(e);
-    res.send(`Something went wrong while running Puppeteer: ${e}`);
-  } finally {
+
+    console.log(`Clipboard Content: ${clipboardContent}`); // Logs "Hello, Clipboard!"
+
+    // Close the browser
     await browser.close();
+  } catch (e) {
+    console.error(`Error: ${e.message}`);
   }
-};
+})();
+
 
 module.exports = { scrapeLogic };
