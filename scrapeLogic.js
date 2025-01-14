@@ -41,14 +41,14 @@ const scrapeLogic = async (res) => {
       ["clipboard-read", "clipboard-write"]
     );
 
-    // Navigate to Facebook login
-    await page.goto("https://web.facebook.com");
-    await page.type("#email", "ibsalam24@gmail.com");
-    await page.type("#pass", "Password24@");
-    setTimeout(async () => {
-      await page.click('[name="login"]');
-    }, 9000);
-    await page.waitForNavigation({ waitUntil: "load" });
+    // // Navigate to Facebook login
+    // await page.goto("https://web.facebook.com");
+    // await page.type("#email", "ibsalam24@gmail.com");
+    // await page.type("#pass", "Password24@");
+    // setTimeout(async () => {
+    //   await page.click('[name="login"]');
+    // }, 9000);
+    // await page.waitForNavigation({ waitUntil: "load" });
 
     // Navigate to a specific group
     await page.goto("https://web.facebook.com/groups/238990561518405", {
@@ -68,8 +68,8 @@ const scrapeLogic = async (res) => {
       urls ==
       "https://www.facebook.com/login/?next=https%3A%2F%2Fweb.facebook.com%2Fgroups%2F238990561518405&_rdc=1&_rdr"
     ) {
-      console.log('aaaa');
-      
+      console.log("aaaa");
+
       // Select the password input field using its type attribute
       const passwordInput = await page.$('input[type="password"]');
 
@@ -78,15 +78,12 @@ const scrapeLogic = async (res) => {
       const submit = await page.$('input[type="submit"]');
       await page.click('[type="submit"]');
       await page.waitForNavigation({
-        waitUntil: "networkidle2",
-        timeout: 60000,
+        waitUntil: "load",
       });
-      // Navigate to a specific group
-      await page.goto("https://web.facebook.com/groups/238990561518405", {
-        waitUntil: "networkidle2",
-        timeout: 60000,
-      });
-    }
+    } // Navigate to a specific group
+    await page.goto("https://web.facebook.com/groups/238990561518405", {
+      waitUntil: "load",
+    });
     // Wait for content to load
     await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z", {
       waitUntil: "networkidle2",
