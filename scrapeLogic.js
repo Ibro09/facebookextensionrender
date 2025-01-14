@@ -64,9 +64,7 @@ try {
    }
  });
   // Wait for content to load
-  await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z", {
-    timeout: 60000,
-  });
+  await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z");
 
   const keywords = ["a"];
   const results = [];
