@@ -22,7 +22,6 @@ const scrapeLogic = async (res) => {
       await context.overridePermissions("https://developer.chrome.com/", [
         "clipboard-read",
         "clipboard-write",
-        "clipboard-sanitized-write",
       ]);
     await page.goto("https://developer.chrome.com/");
      await page.evaluate(async () => {
