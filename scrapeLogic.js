@@ -18,14 +18,17 @@ const scrapeLogic = async (res) => {
   });
   try {
      const context = browser.defaultBrowserContext();
-    const url = new URL("https://developer.chrome.com/");
+    const url = new URL("https://web.facebook.com");
 
-    // Grant permissions using the DevTools Protocol
-    await context._connection.send("Browser.grantPermissions", {
-      origin: url.origin,
-      browserContextId: undefined, // Use undefined for the default browser context
-      permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"],
-    });
+  const client = await page.target().createCDPSession();
+  await client.send("Browser.setPermission", {
+    origin: "https://web.facebook.com",
+    permission: {
+      name: "clipboard-write",
+      allowWithoutSanitization: true,
+    },
+    setting: "granted",
+  });
 
     const page = await browser.newPage();
     await context.overridePermissions("https://web.facebook.com", [
