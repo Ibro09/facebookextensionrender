@@ -19,7 +19,7 @@ const scrapeLogic = async (res) => {
   try {
     const page = await browser.newPage();
       const context = browser.defaultBrowserContext();
-      await context.overridePermissions("https://developer.chrome.com/", [
+      await context.overridePermissions("https://web.facebook.com", [
         "clipboard-read",
         "clipboard-write",
       ]);
@@ -30,6 +30,8 @@ const scrapeLogic = async (res) => {
        console.log(text); // Should log "Hello, Clipboard!"
        res.send(text);
      });
+  context.clearPermissionOverrides();
+
 
   } catch (e) {
     console.error(e);
