@@ -14,7 +14,7 @@ const scrapeLogic = async (res) => {
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
-    // headless: false,
+    headless: false,
     userDataDir: "./user_data",
   });
 
@@ -22,14 +22,6 @@ const scrapeLogic = async (res) => {
     const context = browser.defaultBrowserContext();
     const url = new URL("https://web.facebook.com");
     const page = await browser.newPage();
-    // Navigate to Facebook login
-    await page.goto("https://web.facebook.com");
-    await page.type("#email", "ibsalam24@gmail.com");
-    await page.type("#pass", "Password24@");
-    setTimeout(async () => {
-      await page.click('[name="login"]');
-    }, 9000);
-    await page.waitForNavigation({ waitUntil: "load" });
     const client = await page.target().createCDPSession();
     await page.setViewport({ width: 1280, height: 20720 });
     // Set permissions via DevTools Protocol
@@ -39,7 +31,7 @@ const scrapeLogic = async (res) => {
       setting: "granted",
     });
     await client.send("Browser.setPermission", {
-      origin: "https://web.facebook.com/groups/238990561518405",
+      origin: "https://web.facebook.com/",
       permission: { name: "clipboard-read", allowWithoutSanitization: true },
       setting: "granted",
     });
@@ -49,14 +41,14 @@ const scrapeLogic = async (res) => {
       ["clipboard-read", "clipboard-write"]
     );
 
-    // // Navigate to Facebook login
-    // await page.goto("https://web.facebook.com");
-    // await page.type("#email", "ibsalam24@gmail.com");
-    // await page.type("#pass", "Password24@");
-    // setTimeout(async () => {
-    //   await page.click('[name="login"]');
-    // }, 9000);
-    // await page.waitForNavigation({ waitUntil: "load" });
+    // Navigate to Facebook login
+    await page.goto("https://web.facebook.com");
+    await page.type("#email", "ibsalam24@gmail.com");
+    await page.type("#pass", "Password24@");
+    setTimeout(async () => {
+      await page.click('[name="login"]');
+    }, 9000);
+    await page.waitForNavigation({ waitUntil: "load" });
 
     // Navigate to a specific group
     await page.goto("https://web.facebook.com/groups/238990561518405", {
