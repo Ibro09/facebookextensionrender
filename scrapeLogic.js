@@ -34,7 +34,7 @@ const scrapeLogic = async (res) => {
     await context.overridePermissions("https://web.facebook.com", [
       "clipboard-read",
       "clipboard-write",
-      "clipboard-Sanitized-write",
+      "clipboard-sanitized-write",
     ]);
     await page.goto("https://web.facebook.com");
 
@@ -56,6 +56,7 @@ const scrapeLogic = async (res) => {
     await browser.close();
   } catch (e) {
     console.error(`Error: ${e.message}`);
+    res.send('error:',e)
   } finally {
     await browser.close();
   }
