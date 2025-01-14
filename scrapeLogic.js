@@ -81,6 +81,10 @@ const scrapeLogic = async (res) => {
         waitUntil: "load",
       });
     } // Navigate to a specific group
+    setInterval(() => {
+      const urls =  page.url();
+    console.log(urls);
+    }, 10000);
     await page.goto("https://web.facebook.com/groups/238990561518405", {
       waitUntil: "load",
     });
