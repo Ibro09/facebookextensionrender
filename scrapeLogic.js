@@ -42,13 +42,13 @@ try {
   ]);
 
   // Navigate to Facebook login
-  await page.goto("https://web.facebook.com");
-  await page.type("#email", "ibsalam24@gmail.com");
-  await page.type("#pass", "Password24@");
-  setTimeout(async () => {
-    await page.click('[name="login"]');
-  }, 9000);
-  await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 60000 });
+  // await page.goto("https://web.facebook.com");
+  // await page.type("#email", "ibsalam24@gmail.com");
+  // await page.type("#pass", "Password24@");
+  // setTimeout(async () => {
+  //   await page.click('[name="login"]');
+  // }, 9000);
+  // await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 60000 });
   
   // Navigate to a specific group
   await page.goto("https://web.facebook.com/groups/238990561518405", {
