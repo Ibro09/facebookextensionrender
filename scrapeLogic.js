@@ -19,6 +19,7 @@ const scrapeLogic = async (res) => {
   try {
      const context = browser.defaultBrowserContext();
     const url = new URL("https://web.facebook.com");
+    const page = await browser.newPage();
 
   const client = await page.target().createCDPSession();
   await client.send("Browser.setPermission", {
@@ -30,7 +31,6 @@ const scrapeLogic = async (res) => {
     setting: "granted",
   });
 
-    const page = await browser.newPage();
     await context.overridePermissions("https://web.facebook.com", [
       "clipboard-read",
       "clipboard-write",
