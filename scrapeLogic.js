@@ -68,6 +68,8 @@ const scrapeLogic = async (res) => {
       urls ==
       "https://www.facebook.com/login/?next=https%3A%2F%2Fweb.facebook.com%2Fgroups%2F238990561518405&_rdc=1&_rdr"
     ) {
+      console.log('aaaa');
+      
       // Select the password input field using its type attribute
       const passwordInput = await page.$('input[type="password"]');
 
