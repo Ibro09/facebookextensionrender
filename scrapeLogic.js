@@ -1,10 +1,23 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-(async () => {
+const scrapeLogic = async (res) => {
+  const browser = await puppeteer.launch({
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+      "--enable-blink-features=ClipboardAPI",
+    ],
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+    // headless: false,
+  });
   try {
-    const browser = await puppeteer.launch({ headless: false });
-    const context = browser.defaultBrowserContext();
+     const context = browser.defaultBrowserContext();
     const url = new URL("https://developer.chrome.com/");
 
     // Grant permissions using the DevTools Protocol
@@ -19,8 +32,7 @@ require("dotenv").config();
 
     // Check clipboard-write permission state
     const state = await page.evaluate(async () => {
-      return (await navigator.permissions.query({ name: "clipboard-write" }))
-        .state;
+      return (await navigator.permissions.query({ name: "clipboard-write" })).state;
     });
 
     console.log(`Clipboard-write permission state: ${state}`); // Logs "granted"
@@ -37,8 +49,9 @@ require("dotenv").config();
     await browser.close();
   } catch (e) {
     console.error(`Error: ${e.message}`);
+  } finally {
+    await browser.close();
   }
-})();
-
+};
 
 module.exports = { scrapeLogic };
