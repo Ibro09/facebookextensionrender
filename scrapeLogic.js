@@ -28,7 +28,12 @@ const scrapeLogic = async (res) => {
     });
 
     const page = await browser.newPage();
-    await page.goto(url.href);
+    await context.overridePermissions("https://web.facebook.com", [
+      "clipboard-read",
+      "clipboard-write",
+      "clipboard-Sanitized-write",
+    ]);
+    await page.goto("https://web.facebook.com");
 
     // Check clipboard-write permission state
     const state = await page.evaluate(async () => {
@@ -39,12 +44,11 @@ const scrapeLogic = async (res) => {
 
     // Perform clipboard operations
     const clipboardContent = await page.evaluate(async () => {
-      await navigator.clipboard.writeText("Hello, Clipboard!");
       return await navigator.clipboard.readText();
     });
 
     console.log(`Clipboard Content: ${clipboardContent}`); // Logs "Hello, Clipboard!"
-
+    res.send(clipboardContent);
     // Close the browser
     await browser.close();
   } catch (e) {
