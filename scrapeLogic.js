@@ -31,24 +31,24 @@ const scrapeLogic = async (res) => {
       setting: "granted",
     });
     await client.send("Browser.setPermission", {
-      origin: "https://web.facebook.com",
+      origin: "https://web.facebook.com/groups/238990561518405",
       permission: { name: "clipboard-read", allowWithoutSanitization: true },
       setting: "granted",
     });
 
-    await context.overridePermissions("https://web.facebook.com", [
-      "clipboard-read",
-      "clipboard-write",
-    ]);
+    await context.overridePermissions(
+      "https://web.facebook.com/groups/238990561518405",
+      ["clipboard-read", "clipboard-write"]
+    );
 
     // Navigate to Facebook login
-    // await page.goto("https://web.facebook.com");
-    // await page.type("#email", "ibsalam24@gmail.com");
-    // await page.type("#pass", "Password24@");
-    // setTimeout(async () => {
-    //   await page.click('[name="login"]');
-    // }, 9000);
-    // await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto("https://web.facebook.com");
+    await page.type("#email", "ibsalam24@gmail.com");
+    await page.type("#pass", "Password24@");
+    setTimeout(async () => {
+      await page.click('[name="login"]');
+    }, 9000);
+    await page.waitForNavigation({ waitUntil: "load" });
 
     // Navigate to a specific group
     await page.goto("https://web.facebook.com/groups/238990561518405", {
@@ -111,8 +111,26 @@ const scrapeLogic = async (res) => {
             ).find((span) => span.innerText.toLowerCase().includes("copy"));
 
             if (span) {
-              span.click(); // Click the span
-              results.push({ text: span.innerText, clicked: true });
+              // Collect all attributes and their values
+              const attributes = Array.from(span.attributes).reduce(
+                (acc, attr) => {
+                  acc[attr.name] = attr.value;
+                  return acc;
+                },
+                {}
+              );
+
+              // Push attributes into the results array
+              results.push({
+                text: span.innerText,
+                attributes,
+                clicked: true,
+              });
+
+              console.log("Span Attributes:", attributes); // Log attributes for debugging
+
+              // Simulate a click on the span
+              span.click();
             }
           }
         }
@@ -121,6 +139,7 @@ const scrapeLogic = async (res) => {
 
       results.push(...divContents);
 
+      // Extract copied text for each clicked span
       for (const content of divContents) {
         if (content.clicked) {
           const copiedText = await page.evaluate(() =>
@@ -132,7 +151,7 @@ const scrapeLogic = async (res) => {
     }
 
     const uniqueLinks = [...new Set(links)];
-    console.log("Final Results:", results, uniqueLinks);
+    console.log("Final Results:", uniqueLinks);
 
     // Verify permissions
     const writePermission = await page.evaluate(async () => {
