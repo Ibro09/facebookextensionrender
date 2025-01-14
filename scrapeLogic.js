@@ -19,12 +19,13 @@ const scrapeLogic = async (res) => {
     const page = await browser.newPage();
 
     await page.goto("https://developer.chrome.com/");
+     await page.overridePermissions("https://developer.chrome.com/");
+     await page.evaluate(async () => {
+       await navigator.clipboard.writeText("Hello, Clipboard!");
+       const text = await navigator.clipboard.readText();
+       console.log(text); // Should log "Hello, Clipboard!"
+     });
 
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
-
-    // Type into search box
- 
     res.send('done');
   } catch (e) {
     console.error(e);
