@@ -15,13 +15,21 @@ const scrapeLogic = async (res) => {
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
     // headless: false,
+    userDataDir: "./user_data",
   });
 
   try {
     const context = browser.defaultBrowserContext();
     const url = new URL("https://web.facebook.com");
     const page = await browser.newPage();
-
+    // Navigate to Facebook login
+    await page.goto("https://web.facebook.com");
+    await page.type("#email", "ibsalam24@gmail.com");
+    await page.type("#pass", "Password24@");
+    setTimeout(async () => {
+      await page.click('[name="login"]');
+    }, 9000);
+    await page.waitForNavigation({ waitUntil: "load" });
     const client = await page.target().createCDPSession();
     await page.setViewport({ width: 1280, height: 20720 });
     // Set permissions via DevTools Protocol
@@ -72,7 +80,7 @@ const scrapeLogic = async (res) => {
 
       // Select the password input field using its type attribute
       const passwordInput = await page.$('input[type="password"]');
-       await page.type('input[type="password"]', "Password24@");
+      await page.type('input[type="password"]', "Password24@");
 
       // Type a password into the password input field
       await passwordInput.type("Password24@"); // Replace with your password
@@ -83,8 +91,8 @@ const scrapeLogic = async (res) => {
       });
     } // Navigate to a specific group
     setInterval(() => {
-      const urls =  page.url();
-    console.log(urls);
+      const urls = page.url();
+      console.log(urls);
     }, 10000);
     await page.goto("https://web.facebook.com/groups/238990561518405", {
       waitUntil: "load",
