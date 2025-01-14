@@ -56,7 +56,7 @@ try {
     timeout: 60000,
   });
  await page.bringToFront(); // Bring the page into focus
-
+ console.log(await page.title())
  // Ensure the document is focused
  await page.evaluate(() => {
    if (!document.hasFocus()) {
