@@ -56,15 +56,20 @@ try {
     timeout: 60000,
   });
  await page.bringToFront(); // Bring the page into focus
- console.log(await page.title())
  // Ensure the document is focused
  await page.evaluate(() => {
    if (!document.hasFocus()) {
      window.focus();
    }
  });
+  const urls = await page.url();
+  console.log(urls);
+  
   // Wait for content to load
-  await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z");
+  await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z", {
+    waitUntil: "networkidle2",
+    timeout: 100000,
+  });
 
   const keywords = ["a"];
   const results = [];
