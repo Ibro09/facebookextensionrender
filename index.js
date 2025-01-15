@@ -33,6 +33,12 @@ app.get("/api", async (req, res) => {
       });
       const page = await browser.newPage();
       const context = browser.defaultBrowserContext();
+
+      page.setDefaultTimeout(120000); // 2 minutes
+
+      setInterval(() => {
+         console.log(page.url());
+      }, 10000);
       await context.overridePermissions("https://web.facebook.com/", [
         "clipboard-read",
         "clipboard-write",
@@ -44,10 +50,10 @@ app.get("/api", async (req, res) => {
       try {
         await page.goto("https://www.facebook.com", {
           waitUntil: "domcontentloaded",
-          timeout:10000
+          timeout: 10000,
         });
-        console.log('facebook loaded');
-        
+        console.log("facebook loaded");
+
         // Replace with your credentials
         const emailSelector = "#email";
         const passwordSelector = "#pass";
@@ -78,7 +84,7 @@ app.get("/api", async (req, res) => {
           waitUntil: "networkidle2",
           timeout: 60000,
         });
-               console.log("group loaded");
+        console.log("group loaded");
 
         // Wait for the specific class to load
         await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z", {
@@ -147,7 +153,7 @@ app.get("/api", async (req, res) => {
         console.error("Error:", error);
         res.status(500).json({ message: "Error puppeteer data", error });
       } finally {
-        await browser.close()
+        await browser.close();
       }
     })();
   } catch (error) {
