@@ -83,6 +83,7 @@ app.get("/api", async (req, res) => {
           page.url().includes("https://www.facebook.com/login") ||
          page.url().includes("https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F")
         ) {
+          console.log('page')
           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
           await page.waitForSelector("div.rfloat._ohf"); // Wait for the div to appear
           await page.type('input[name="pass"]', "Password24@"); // Type the password
