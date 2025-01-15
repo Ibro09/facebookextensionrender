@@ -84,11 +84,10 @@ app.get("/api", async (req, res) => {
          page.url().includes("https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F")
         ) {
           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
+          await page.waitForSelector("div.rfloat._ohf"); // Wait for the div to appear
           await page.type('input[name="pass"]', "Password24@"); // Type the password
           setInterval(async () => {
-            await page.click(
-              'input[data-testid="sec_ac_button"]' || 'input[value="Continue"]'
-            ); // Click the button
+            await page.click("div.rfloat._ohf"); // Click the div
           }, 5000); // Wait for the button to appear
           await page.waitForNavigation({ waitUntil: "networkidle2" });
           console.log(page.url(), "thisssss");
