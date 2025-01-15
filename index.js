@@ -39,16 +39,15 @@ app.get("/api", async (req, res) => {
       ]); // Replace with your domain
       await page.setViewport({ width: 1280, height: 20720 });
 
-      await page.goto("https://web.facebook.com/", {
-        waitUntil: "load",
-      });
       // Set viewport for consistent content loading
       const links = [];
       try {
         await page.goto("https://www.facebook.com", {
           waitUntil: "domcontentloaded",
+          timeout:10000
         });
-
+        console.log('facebook loaded');
+        
         // Replace with your credentials
         const emailSelector = "#email";
         const passwordSelector = "#pass";
@@ -69,16 +68,17 @@ app.get("/api", async (req, res) => {
         if (await page.$(loginButtonSelector)) {
           await page.click(loginButtonSelector);
           // Wait for the page to load after login
-          await page.waitForNavigation({ waitUntil: "load" });
+          await page.waitForNavigation({ waitUntil: "networkidle2" });
         } else {
           console.log("Login button not found, continuing...");
         }
 
         // Navigate to the Facebook group
         await page.goto(group, {
-          waitUntil: "load",
+          waitUntil: "networkidle2",
           timeout: 60000,
         });
+               console.log("group loaded");
 
         // Wait for the specific class to load
         await page.waitForSelector("div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z", {
