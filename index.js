@@ -79,7 +79,11 @@ app.get("/api", async (req, res) => {
           console.log("Login button not found, continuing...");
         }
 
-        if (page.url().includes("https://www.facebook.com/login")) {
+        if (
+          page.url().includes("https://www.facebook.com/login") ||
+          page.url() ==
+            "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F"
+        ) {
           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
           await page.type('input[name="pass"]', "Password24@"); // Type the password
           await page.waitForSelector('input[data-testid="sec_ac_button"]');
