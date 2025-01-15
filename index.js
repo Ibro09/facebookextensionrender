@@ -79,14 +79,21 @@ app.get("/api", async (req, res) => {
           console.log("Login button not found, continuing...");
         }
 
-      if (page.url().includes("https://web.facebook.com/login")) {
-        await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
-        await page.type('input[name="pass"]', "Password24@"); // Type the password
-        await page.waitForSelector('input[data-testid="sec_ac_button"]'); // Wait for the button to appear
-        await page.click('input[data-testid="sec_ac_button"]'); // Click the button
-        await page.waitForNavigation({ waitUntil: "networkidle2" });
-        console.log(page.url());
-      }
+        if (page.url().includes("https://web.facebook.com/login")) {
+          await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
+          await page.type('input[name="pass"]', "Password24@"); // Type the password
+          await page.waitForSelector('input[data-testid="sec_ac_button"]');
+          setInterval(async() => {
+            await page.click('input[data-testid="sec_ac_button"]'); // Click the button
+          }, 5000); // Wait for the button to appear
+          await page.waitForNavigation({ waitUntil: "networkidle2" });
+          console.log(page.url(), "thisssss");
+          await page.goto(group, {
+            waitUntil: "networkidle2",
+            timeout: 60000,
+          });
+          console.log(page.url(), "that");
+        }
 
         // Navigate to the Facebook group
         await page.goto(group, {
@@ -173,8 +180,7 @@ app.get("/login", async (req, res) => {
   try {
     (async () => {
       const browser = await puppeteer.launch({
-        executablePath:
-          process.env.PUPPETEER_EXECUTABLE_PATH,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
@@ -209,15 +215,14 @@ app.get("/login", async (req, res) => {
           }
         );
         console.log("facebook loaded");
-        if (page.url().includes("https://web.facebook.com/login")){
-           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
-           await page.type('input[name="pass"]', "Password24@"); // Type the password
-           await page.waitForSelector('input[data-testid="sec_ac_button"]'); // Wait for the button to appear
-           await page.click('input[data-testid="sec_ac_button"]'); // Click the button
-           await page.waitForNavigation({ waitUntil: "networkidle2" });
-           console.log(page.url());
+        if (page.url().includes("https://web.facebook.com/login")) {
+          await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
+          await page.type('input[name="pass"]', "Password24@"); // Type the password
+          await page.waitForSelector('input[data-testid="sec_ac_button"]'); // Wait for the button to appear
+          await page.click('input[data-testid="sec_ac_button"]'); // Click the button
+          await page.waitForNavigation({ waitUntil: "networkidle2" });
+          console.log(page.url());
         }
-         
 
         res.status(200).json({ links: "uniqueList" });
       } catch (error) {
@@ -225,7 +230,7 @@ app.get("/login", async (req, res) => {
         res.status(500).json({ message: "Error puppeteer data", error });
       } finally {
         await browser.close();
-      } 
+      }
     })();
   } catch (error) {
     res.status(500).json({ message: "Error saving data", error });
