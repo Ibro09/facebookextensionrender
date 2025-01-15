@@ -4,8 +4,8 @@ FROM ghcr.io/puppeteer/puppeteer:19.7.2
 # Environment variables to configure Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable \
-    DEBUG="puppeteer:*" # Enable Puppeteer debug logs
-
+    DEBUG="puppeteer:*" 
+    
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
