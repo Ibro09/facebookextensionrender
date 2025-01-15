@@ -19,13 +19,16 @@ app.get("/api", async (req, res) => {
   try {
     (async () => {
       const browser = await puppeteer.launch({
+        executablePath:
+          process.env.PUPPETEER_EXECUTABLE_PATH ||
+          (await chromium.executablePath),
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--enable-features=ClipboardReadWrite",
           "--unsafely-treat-insecure-origin-as-secure=http://web.facebook.com", // Replace with your domain
         ],
-        // headless: false,
+        headless: true,
         userDataDir: "./user_data",
       });
       const page = await browser.newPage();
