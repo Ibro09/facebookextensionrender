@@ -92,7 +92,6 @@ app.get("/api", async (req, res) => {
             // Replace with your credentials
             const emailSelector = "#email";
             const passwordSelector = "#pass";
-            const loginButtonSelector = "#loginbutton";
 
             if (await page.$(emailSelector)) {
               await page.type(emailSelector, "ibsalam24@gmail.com");
@@ -105,16 +104,47 @@ app.get("/api", async (req, res) => {
             } else {
               console.log("Password input not found, continuing...");
             }
+            console.log('email and pass succesful');
+            
+            const secAcButtonSelector = 'input[data-testid="sec_ac_button"]';
+            const loginBtnSelector = "#loginbutton";
 
-            if (await page.$(loginButtonSelector)) {
-              setInterval(async () => {
-              await page.click(loginButtonSelector);
-              }, 5000);
-              // Wait for the page to load after login
-              await page.waitForNavigation({ waitUntil: "networkidle2" });
-            } else {
-              console.log("Login button not found, continuing...");
+            try {
+              // Check for the sec_ac_button first
+              if (
+                await page.waitForSelector(secAcButtonSelector, {
+                  timeout: 5000,
+                })
+              ) {
+                console.log("SEC AC button found, clicking...");
+                await page.click(secAcButtonSelector);
+              }
+              // Check for the login button if the sec_ac_button is not found
+              else if (await page.$(loginBtnSelector)) {
+                console.log("Login button found, retrying click...");
+                const interval = setInterval(async () => {
+                  try {
+                    if (await page.$(loginBtnSelector)) {
+                      await page.click(loginBtnSelector);
+                      clearInterval(interval); // Stop retries after success
+                      console.log("Login successful, navigating...");
+                      await page.waitForNavigation({
+                        waitUntil: "networkidle2",
+                      });
+                    }
+                  } catch (err) {
+                    console.error("Error clicking login button:", err);
+                  }
+                }, 5000); // Retry every 5 seconds
+              }
+              // Log if neither button is found
+              else {
+                console.log("No buttons found, continuing...");
+              }
+            } catch (error) {
+              console.error("Error in button handling:", error);
             }
+
             // Type the password
             // Wait for the button to appear
             await page.waitForNavigation({ waitUntil: "networkidle2" });
@@ -219,7 +249,7 @@ app.get("/login", async (req, res) => {
           "--enable-features=ClipboardReadWrite",
           "--unsafely-treat-insecure-origin-as-secure=http://web.facebook.com", // Replace with your domain
         ],
-        headless: false,
+        // headless: false,
         userDataDir: "./user_data",
       });
       const page = await browser.newPage();
