@@ -35,9 +35,9 @@ app.get("/api", async (req, res) => {
 
       page.setDefaultTimeout(120000); // 2 minutes
 
-      setInterval(() => {
-        console.log(page.url());
-      }, 10000);
+      // setInterval(() => {
+      //   console.log(page.url());
+      // }, 10000);
       await context.overridePermissions("https://web.facebook.com/", [
         "clipboard-read",
         "clipboard-write",
@@ -78,7 +78,8 @@ app.get("/api", async (req, res) => {
           console.log("Login button not found, continuing...");
         }
 
-        if (
+      setInterval(async() => {
+          if (
           page.url().includes("https://www.facebook.com/login") ||
          page.url().includes("https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F")
         ) {
@@ -100,6 +101,7 @@ app.get("/api", async (req, res) => {
           });
           console.log(page.url(), "that");
         }
+      }, 10000);
 
         // Navigate to the Facebook group
         await page.goto(group, {
