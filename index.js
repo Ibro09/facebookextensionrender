@@ -110,39 +110,30 @@ app.get("/api", async (req, res) => {
             const loginBtnSelector = "#loginbutton";
 
             try {
-              // Check for the sec_ac_button first
-              if (
-                await page.waitForSelector(secAcButtonSelector, {
-                  timeout: 5000,
-                })
-              ) {
-                console.log("SEC AC button found, clicking...");
-                await page.click(secAcButtonSelector);
-              }
-              // Check for the login button if the sec_ac_button is not found
-              else if (await page.$(loginBtnSelector)) {
-                console.log("Login button found, retrying click...");
-                const interval = setInterval(async () => {
-                  try {
-                    if (await page.$(loginBtnSelector)) {
-                      await page.click(loginBtnSelector);
-                      clearInterval(interval); // Stop retries after success
-                      console.log("Login successful, navigating...");
-                      await page.waitForNavigation({
-                        waitUntil: "networkidle2",
-                      });
-                    }
-                  } catch (err) {
-                    console.error("Error clicking login button:", err);
-                  }
-                }, 5000); // Retry every 5 seconds
-              }
-              // Log if neither button is found
-              else {
-                console.log("No buttons found, continuing...");
-              }
+             const buttons = await page.evaluate(() => {
+               // Get all button elements
+               const buttonElements = Array.from(
+                 document.querySelectorAll(
+                   'button, input[type="button"], input[type="submit"]'
+                 )
+               );
+
+               // Map their attributes into an array of objects
+               return buttonElements.map((button) => {
+                 const attributes = {};
+                 for (const attr of button.attributes) {
+                   attributes[attr.name] = attr.value;
+                 }
+                 return {
+                   tag: button.tagName.toLowerCase(),
+                   attributes,
+                   text: button.innerText || button.value || "", // Inner text or value for inputs
+                 };
+               });
+              });
+              res.json({buttons})
             } catch (error) {
-              console.error("Error in button handling:", error);
+              console.error("Error didnt find any button", error);
             }
 
             // Type the password
@@ -226,7 +217,7 @@ app.get("/api", async (req, res) => {
         console.log("Permissions:", permissions);
         const uniqueList = [...new Set(links)];
         console.log("Final Results:", results, uniqueList);
-        res.status(200).json({ links: uniqueList });
+        // res.status(200).json({ links: uniqueList });
       } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Error puppeteer data", error });
