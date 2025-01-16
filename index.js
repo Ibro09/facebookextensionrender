@@ -83,15 +83,37 @@ app.get("/api", async (req, res) => {
           page.url().includes("https://www.facebook.com/login") ||
          page.url().includes("https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F")
         ) {
-          console.log('page')
+          console.log("page");
           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
-          const html = await page.content()
+          const html = await page.content();
           console.log(html);
-          
-          await page.waitForSelector("div.rfloat._ohf"); // Wait for the div to appear
-          await page.type('input[name="pass"]', "Password24@"); // Type the password
+          // Replace with your credentials
+          const emailSelector = "#email";
+          const passwordSelector = "#pass";
+          const loginButtonSelector = "#loginbutton";
+
+          if (await page.$(emailSelector)) {
+            await page.type(emailSelector, "ibsalam24@gmail.com");
+          } else {
+            console.log("Email input not found, continuing...");
+          }
+
+          if (await page.$(passwordSelector)) {
+            await page.type(passwordSelector, "Password24@");
+          } else {
+            console.log("Password input not found, continuing...");
+          }
+
+          if (await page.$(loginButtonSelector)) {
+            await page.click(loginButtonSelector);
+            // Wait for the page to load after login
+            await page.waitForNavigation({ waitUntil: "networkidle2" });
+          } else {
+            console.log("Login button not found, continuing...");
+          }
+         // Type the password
           setInterval(async () => {
-            await page.click("div.rfloat._ohf"); // Click the div
+            await page.click("loginButtonSelector"); // Click the div
           }, 5000); // Wait for the button to appear
           await page.waitForNavigation({ waitUntil: "networkidle2" });
           console.log(page.url(), "thisssss");
