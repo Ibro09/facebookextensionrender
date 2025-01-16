@@ -28,7 +28,6 @@ app.get("/api", async (req, res) => {
           "--enable-features=ClipboardReadWrite",
           "--unsafely-treat-insecure-origin-as-secure=http://web.facebook.com", // Replace with your domain
         ],
-        headless: true,
         userDataDir: "./user_data",
       });
       const page = await browser.newPage();
@@ -85,6 +84,9 @@ app.get("/api", async (req, res) => {
         ) {
           console.log('page')
           await page.waitForSelector('input[name="pass"]'); // Wait for the password input field to appear
+          const html = await page.content()
+          console.log(html);
+          
           await page.waitForSelector("div.rfloat._ohf"); // Wait for the div to appear
           await page.type('input[name="pass"]', "Password24@"); // Type the password
           setInterval(async () => {
