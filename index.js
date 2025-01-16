@@ -110,28 +110,43 @@ app.get("/api", async (req, res) => {
             const loginBtnSelector = "#loginbutton";
 
             try {
-             const buttons = await page.evaluate(() => {
-               // Get all button elements
-               const buttonElements = Array.from(
-                 document.querySelectorAll(
-                   'button, input[type="button"], input[type="submit"]'
-                 )
-               );
+              const buttons = await page.evaluate(() => {
+                // Get all button elements
+                const buttonElements = Array.from(
+                  document.querySelectorAll(
+                    'button, input[type="button"], input[type="submit"]'
+                  )
+                );
 
-               // Map their attributes into an array of objects
-               return buttonElements.map((button) => {
-                 const attributes = {};
-                 for (const attr of button.attributes) {
-                   attributes[attr.name] = attr.value;
-                 }
-                 return {
-                   tag: button.tagName.toLowerCase(),
-                   attributes,
-                   text: button.innerText || button.value || "", // Inner text or value for inputs
-                 };
-               });
+                // Map their attributes into an array of objects
+                return buttonElements.map((button) => {
+                  const attributes = {};
+                  for (const attr of button.attributes) {
+                    attributes[attr.name] = attr.value;
+                  }
+                  return {
+                    tag: button.tagName.toLowerCase(),
+                    attributes,
+                    text: button.innerText || button.value || "", // Inner text or value for inputs
+                  };
+                });
               });
-              res.json({buttons})
+              // Check for a button with id 'loginbutton' and click it
+              const buttonWithId = buttons.find(
+                (button) => button.attributes.id === "loginbutton"
+              );
+
+              if (buttonWithId) {
+                console.log("Button with ID 'loginbutton' found. Clicking...");
+                await page.evaluate(() => {
+                  const button = document.querySelector("#loginbutton");
+                  if (button) button.click();
+                 console.log('clicked');
+                 
+                });
+              } else {
+                console.log("No button with ID 'loginbutton' found.");
+              }
             } catch (error) {
               console.error("Error didnt find any button", error);
             }
